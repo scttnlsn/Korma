@@ -188,6 +188,13 @@
         "SELECT \"users\".* FROM \"users\""
         (select users (where {})))))
 
+(deftest order-reorder
+  (sql-only
+    (is (= "SELECT \"users\".* FROM \"users\" ORDER BY \"users\".\"created\" DESC"
+           (select users
+                   (order :updated)
+                   (reorder :created :DESC))))))
+
 (deftest with-many
   (with-out-str
     (dry-run

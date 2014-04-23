@@ -277,6 +277,15 @@
   [query field & [dir]]
   (update-in query [:order] conj [field (or dir :ASC)]))
 
+(defn reorder
+  "Clear all order clauses then add an ORDER BY clause to a select, union,
+  union-all or intersect query.
+  field should be a keyword of the field name, dir is ASC by default.
+  
+  (reorder query :created :asc)"
+  [query field & [dir]]
+  (order (assoc query :order []) field dir))
+
 (defn values
   "Add records to an insert clause. values can either be a vector of maps or a
   single map.
