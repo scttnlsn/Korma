@@ -260,8 +260,15 @@
                *current-conn* conn#]
        ~@body)))
 
+(defn- use-current-conn? [db]
+  "Returns true if the current connection should be used
+  instead of the given db spec"
+  (and *current-conn*
+       (or (nil? db)
+           (identical? db *current-db*))))
+
 (defn do-query [{:keys [db] :as query}]
-  (if *current-conn*
+  (if (use-current-conn? db)
     (exec-sql query)
     (with-db (or db @_default)
       (exec-sql query))))

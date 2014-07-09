@@ -36,3 +36,12 @@
          (select user
            (database mem-db)
            (with email)))))
+
+(deftest per-query-database-takes-precedence
+  (let [other-db (create-db (h2 {:db "mem:query_other_database"}))]
+    (is (= [{:id 1 :name "Chris" :email [{:id 1 :user_id 1 :email_address "chris@email.com"}]}]
+         (with-db other-db
+           (dorun (map exec-raw schema))
+           (select user
+             (database mem-db)
+             (with email)))))))
